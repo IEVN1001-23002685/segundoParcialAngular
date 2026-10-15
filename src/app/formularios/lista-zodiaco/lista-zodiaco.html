@@ -1,0 +1,64 @@
+<div class="mx-auto mt-8 max-w-7xl">
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="w-full text-sm text-left text-gray-500">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        Nombre completo
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Edad
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Sexo
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Signo
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Acciones
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let persona of listaZodiaco; let i = index"
+                    class="bg-white border-b border-gray-200 hover:bg-gray-50">
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                        {{ persona.nombre }}
+                        {{ persona.apellidoPaterno }}
+                        {{ persona.apellidoMaterno }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ persona.edad }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ persona.masculino ? 'Masculino' :
+                        persona.femenino ? 'Femenino' :
+                        'No especificado' }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ persona.zigno || 'No especificado' }}
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex gap-2">
+                            <button type="button"
+                                class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300"
+                                (click)="editarZodiaco(i)">
+                                Editar
+                            </button>
+                            <button type="button"
+                                class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300"
+                                (click)="eliminarZodiaco(i)">
+                                Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="listaZodiaco.length === 0" class="p-4 mt-4 text-sm text-gray-800 bg-gray-100 rounded-lg" role="alert">
+        <span class="font-medium">Información:</span>
+        No hay registros de zodiaco guardados.
+    </div>
+</div>

@@ -10,6 +10,8 @@ import { IZodiaco } from './izodiaco';
 })
 export class Zodiaco {
   formulario !: FormGroup
+  listaZodiaco: IZodiaco[] = [];
+  indiceEdicion: number = -1;
   datosPersonales: IZodiaco = {
     nombre: '',
     apellidoPaterno: '',
@@ -30,26 +32,69 @@ export class Zodiaco {
       dia: new FormControl(''),
       mes: new FormControl(''),
       ano: new FormControl(''),
-      masculino: new FormControl(''),
-      femenino: new FormControl('')
-    })
+      sexo: new FormControl('')
+    });
+
+    const indice = localStorage.getItem('indiceEdicion');
+    const persona = localStorage.getItem('personaEdicion');
+
+    if (indice !== null && persona !== null) {
+      this.indiceEdicion = Number(indice);
+      const datos: IZodiaco = JSON.parse(persona);
+      this.datosPersonales = { ...datos };
+
+      this.formulario.patchValue({
+        nombre: datos.nombre,
+        apellidoPaterno: datos.apellidoPaterno,
+        apellidoMaterno: datos.apellidoMaterno,
+        dia: datos.dia,
+        mes: datos.mes,
+        ano: datos.ano,
+        sexo: datos.masculino
+          ? 'masculino'
+          : datos.femenino
+            ? 'femenino'
+            : ''
+      });
+
+      localStorage.removeItem('indiceEdicion');
+      localStorage.removeItem('personaEdicion');
+    }
   }
 
   calcularMostrarDatos(): void {
-    this.datosPersonales.nombre = this.formulario.value.nombre
-    this.datosPersonales.apellidoPaterno = this.formulario.value.apellidoPaterno
-    this.datosPersonales.apellidoMaterno = this.formulario.value.apellidoMaterno
-    this.datosPersonales.dia = this.formulario.value.dia
-    this.datosPersonales.mes = this.formulario.value.mes
-    this.datosPersonales.ano = this.formulario.value.ano
+    this.datosPersonales.nombre = this.formulario.value.nombre;
+    this.datosPersonales.apellidoPaterno = this.formulario.value.apellidoPaterno;
+    this.datosPersonales.apellidoMaterno = this.formulario.value.apellidoMaterno;
+    this.datosPersonales.dia = this.formulario.value.dia;
+    this.datosPersonales.mes = this.formulario.value.mes;
+    this.datosPersonales.ano = this.formulario.value.ano;
+    this.datosPersonales.masculino = this.formulario.value.sexo === 'masculino';
+    this.datosPersonales.femenino = this.formulario.value.sexo === 'femenino';
 
-    let fecha: Date = new Date()
-    const fechaNacimiento = new Date(this.datosPersonales.ano, this.datosPersonales.mes - 1, this.datosPersonales.dia)
-    this.datosPersonales.edad = fecha.getFullYear() - fechaNacimiento.getFullYear()
+    const dia = Number(this.formulario.value.dia);
+    const mes = Number(this.formulario.value.mes);
+    const ano = Number(this.formulario.value.ano);
 
-    if (fecha.getMonth() < fechaNacimiento.getMonth() || (fecha.getMonth() === fechaNacimiento.getMonth() && fecha.getMonth() < fechaNacimiento.getDate())) {
-      this.datosPersonales.edad
+    const hoy = new Date();
+    const fechaNacimiento = new Date(ano, mes - 1, dia);
+
+    if (!dia || !mes || !ano || dia < 1 || dia > 31 || mes < 1 || mes > 12 || fechaNacimiento.getFullYear() !== ano || fechaNacimiento.getMonth() !== mes - 1 || fechaNacimiento.getDate() !== dia || fechaNacimiento > hoy
+    ) {
+      alert('Ingresa una fecha de nacimiento válida.');
+      return;
     }
+
+    let edad = hoy.getFullYear() - ano;
+
+    if (
+      hoy.getMonth() < mes - 1 ||
+      (hoy.getMonth() === mes - 1 && hoy.getDate() < dia)
+    ) {
+      edad--;
+    }
+
+    this.datosPersonales.edad = edad;
 
     let rata = [1936, 1948, 1960, 1972, 1984, 1996, 2008, 2020];
     let buey = [1937, 1949, 1961, 1973, 1985, 1997, 2009, 2021];
@@ -100,6 +145,54 @@ export class Zodiaco {
     } else if (cerdo.includes(this.formulario.value.ano)) {
       this.datosPersonales.zigno = 'Cerdo';
       this.datosPersonales.zignoImagen = 'https://commons.wikimedia.org/wiki/Special:FilePath/OMBRE_CHINOISE_SANGLIER.jpg?width=250';
+    }
+  }
+
+  muestraZodiaco(): void {
+    this.calcularMostrarDatos();
+
+    if (
+      !this.datosPersonales.zigno ||
+      this.datosPersonales.edad === undefined
+    ) {
+      return;
+    }
+
+    const datos = localStorage.getItem('zodiaco');
+
+    if (datos) {
+      this.listaZodiaco = JSON.parse(datos);
+    } else {
+      this.listaZodiaco = [];
+    }
+
+    if (this.indiceEdicion !== -1) {
+      this.listaZodiaco[this.indiceEdicion] = {
+        ...this.datosPersonales
+      };
+
+      this.indiceEdicion = -1;
+    } else {
+      this.listaZodiaco.push({
+        ...this.datosPersonales
+      });
+    }
+
+    localStorage.setItem(
+      'zodiaco',
+      JSON.stringify(this.listaZodiaco)
+    );
+  }
+
+  cargaZodiaco(): void {
+    const datos = localStorage.getItem('zodiaco');
+
+    if (datos) {
+      this.listaZodiaco = JSON.parse(datos);
+      alert(`Se cargaron ${this.listaZodiaco.length} registros de zodiaco.`);
+    } else {
+      this.listaZodiaco = [];
+      alert('No hay registros de zodiaco guardados.');
     }
   }
 }

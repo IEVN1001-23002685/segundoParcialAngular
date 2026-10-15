@@ -1,33 +1,97 @@
-<div class="max-w-2xl p-6 mx-auto bg-white rounded-lg shadow">
+<div class="max-w-4xl p-6 mx-auto bg-white rounded-lg shadow">
     <h1 class="mb-6 text-3xl font-bold text-gray-900">Lista Alumnos</h1>
     <form class="max-w-sm mx-auto" [formGroup]="formulario">
         <div class="mb-5">
             <label for="matricula" class="block mb-2 text-sm font-medium text-gray-900">Matricula</label>
-            <input type="text" id="name" name="name" required formControlName="matricula" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+            <input type="text" id="matricula" name="matricula" required formControlName="matricula" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
                focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Matricula">
             <label for="nombre" class="block mb-2 text-sm font-medium text-gray-900">Nombre</label>
-            <input type="text" id="name" name="name" required formControlName="nombre" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+            <input type="text" id="nombre" name="nombre" required formControlName="nombre" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
                focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Nombre">
             <label for="correo" class="block mb-2 text-sm font-medium text-gray-900">Correo</label>
-            <input type="text" id="name" name="name" required formControlName="correo" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+            <input type="text" id="correo" name="correo" required formControlName="correo" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
                focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Correo">
             <label for="materia" class="block mb-2 text-sm font-medium text-gray-900">Materia</label>
-            <input type="text" id="name" name="name" required formControlName="materia" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+            <input type="text" id="materia" name="materia" required formControlName="materia" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
                focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Materia">
-            <div class="flex justify-end mt-5">
-                <button type="submit" (click)="muestraAlumnos()" class="text-white bg-blue-700 hover:bg-blue-800
+            <div class="flex justify-end gap-8 mt-5">
+                <button type="button" (click)="muestraAlumnos()" class="text-white bg-blue-700 hover:bg-blue-800
                  focus:ring-4 focus:outline-none focus:ring-blue-300
                  font-medium rounded-lg text-sm px-5 py-2.5
                  disabled:opacity-50 disabled:cursor-not-allowed">
-                    Registrar
+                    Mostrar alumnos
+                </button>
+                <button type="button" (click)="cargaAlumnos()" class="text-white bg-blue-700 hover:bg-blue-800
+                 focus:ring-4 focus:outline-none focus:ring-blue-300
+                 font-medium rounded-lg text-sm px-5 py-2.5
+                 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Carga alumnos
                 </button>
             </div>
         </div>
     </form>
-    <div>
-        <h3>Matricula: {{ alumnos.matricula }}</h3>
-        <h3>Nombre: {{ alumnos.nombre }}</h3>
-        <h3>Correo: {{ alumnos.correo }}</h3>
-        <h3>Materia: {{ alumnos.materia }}</h3>
+    <div class="mx-auto mt-8 max-w-7xl">
+        <h2 class="mb-4 text-2xl font-bold text-gray-900">
+            Lista de alumnos
+        </h2>
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <table class="w-full text-sm text-left text-gray-500">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">
+                            Matrícula
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Nombre
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Correo
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Materia
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Acciones
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let alumno1 of listaAlumnos let i = index"
+                        class="bg-white border-b border-gray-200 hover:bg-gray-50">
+                        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                            {{ alumno1.matricula }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ alumno1.nombre }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ alumno1.correo }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ alumno1.materia }}
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex gap-2">
+                                <button type="button"
+                                    class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300"
+                                    (click)="editarAlumnos(i)">
+                                    Editar
+                                </button>
+                                <button type="button"
+                                    class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300"
+                                    (click)="eliminarAlumno(i)">
+                                    Eliminar
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div *ngIf="listaAlumnos.length === 0" class="p-4 mt-4 text-sm text-gray-800 bg-gray-100 rounded-lg"
+            role="alert">
+            <span class="font-medium">Información:</span>
+            No hay alumnos registrados.
+        </div>
     </div>
 </div>
